@@ -11,6 +11,8 @@ idf_component_register(
         "src/effect_envelope.cpp"
         "src/effect_delay.cpp"
         "src/effect_bitcrusher.cpp"
+        "src/control_amp.cpp"
+        "src/effect_waveshaper.cpp"
     INCLUDE_DIRS
         "include"
     REQUIRES
