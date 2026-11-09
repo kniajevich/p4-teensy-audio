@@ -1,6 +1,16 @@
 # Teensy Audio Library for ESP32-P4
 
+[![ESP-IDF Build CI](https://github.com/kniajevich/p4-teensy-audio/actions/workflows/build.yml/badge.svg)](https://github.com/kniajevich/p4-teensy-audio/actions)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+
 High-performance audio processing engine ported from the Teensy Audio Library (`AudioStream` architecture) to Espressif **ESP32-P4** (RISC-V dual-core) running on **ESP-IDF v5.3+**.
+
+---
+
+## Author & Maintainer
+
+* **Port Architect & Lead Developer:** Alex Ovchinnikov ([@kniajevich](https://github.com/kniajevich))
+* **Original Teensy Audio Library:** Paul Stoffregen ([PJRC.COM, LLC](https://www.pjrc.com/teensy/td_libs_Audio.html))
 
 ---
 
@@ -11,7 +21,7 @@ The library retains the asynchronous block-processing paradigm of PJRC's Teensy 
 - **Block Size (`AUDIO_BLOCK_SAMPLES`):** 128 samples per update cycle (~2.9 ms latency at 44.1 kHz).
 - **Sample Format:** 16-bit signed PCM, mono blocks routed into stereo DMA streams.
 - **Sample Rate:** 44.1 kHz (configurable via exact clock divider settings).
-- **Memory Model:** Zero-copy audio block buffer pool with atomic mutex synchronization.
+- **Memory Model:** Zero-copy audio block buffer pool with atomic FreeRTOS mutex synchronization.
 
 ---
 
@@ -80,3 +90,12 @@ idf.py set-target esp32p4
 idf.py build
 idf.py -p /dev/ttyUSB0 flash monitor
 ```
+
+---
+
+## License
+
+This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
+See the [LICENSE](LICENSE) file for complete terms.
+
+Upstream Teensy Audio Library codebase is Copyright (c) PJRC.COM, LLC and licensed under the MIT License.

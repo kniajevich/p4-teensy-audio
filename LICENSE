@@ -1,21 +1,30 @@
-GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+                    GNU GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
 
-Copyright (C) 2026 kniajevich (ESP32-P4 RISC-V Port & Compatibility Layer)
+ Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
 
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+                            Preamble
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+  The GNU General Public License is a free, copyleft license for
+software and other kinds of works.
 
---- THIRD-PARTY ATTRIBUTION & COMPONENT LICENSES:
+  Copyright (c) 2026 Alex Ovchinnikov (@kniajevich)
+  ESP32-P4 Architecture Port & Core Modernization.
 
-1. Teensy Audio Library Architecture & DSP Core:
-   Copyright (c) 2014-2024 Paul Stoffregen / PJRC.COM, LLC.
-   Licensed under the MIT License.
+  Based on Teensy Audio Library:
+  Copyright (c) PJRC.COM, LLC (Paul Stoffregen)
 
-2. ESP-IDF Framework & FreeRTOS Bindings:
-   Copyright (c) Espressif Systems (Shanghai) Co., Ltd.
-   Licensed under the Apache License, Version 2.0.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-Both MIT and Apache 2.0 components are fully compatible with this GPLv3 release.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-For proprietary/commercial licensing without GPLv3 restrictions, contact kniajevich.
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
