@@ -1,49 +1,47 @@
 #ifndef FILTER_VARIABLE_H
 #define FILTER_VARIABLE_H
 
-#include <cstdint>
-#include "arm_math_mock.h"
+#include "AudioStream.h"
+#include <stdint.h>
 
 /**
- * @brief Chamberlin State Variable Filter (SVF) implementation.
+ * @brief State‑variable filter (low‑pass / band‑pass / high‑pass).
  *
- * This filter provides three simultaneous outputs:
- *   0 – Low‑pass
- *   1 – Band‑pass
- *   2 – High‑pass
- *
- * The filter works on 16‑bit signed audio samples.
+ * Provides the standard Teensy Audio API setters (`setFrequency`,
+ * `setResonance`) together with the API‑compatible aliases
+ * `frequency()` and `resonance()`.
  */
-class AudioFilterStateVariable {
+class AudioFilterStateVariable : public AudioStream {
 public:
-    /** Construct a filter with a given sample rate. */
-    explicit AudioFilterStateVariable(float sampleRate = 44100.0f);
+    AudioFilterStateVariable();
+    virtual ~AudioFilterStateVariable() {}
 
-    /** Set the cutoff frequency (Hz). */
-    void setFrequency(float frequency);
+    /** Set the cutoff frequency in Hz. */
+    void setFrequency(float freq);
 
     /** Set the resonance (Q factor). */
-    void setResonance(float resonance);
+    void setResonance(float q);
 
-    /** Process a single input sample and obtain the selected output.
-     *
-     * @param input   Input audio sample (int16_t).
-     * @param mode    0 = low‑pass, 1 = band‑pass, 2 = high‑pass.
-     * @return        Filtered sample (int16_t) saturated to the int16 range.
-     */
-    int16_t update(int16_t input, uint8_t mode = 0);
+    /** Alias for setFrequency – required by the Teensy API. */
+    void frequency(float freq) { setFrequency(freq); }
+
+    /** Alias for setResonance – required by the Teensy API. */
+    void resonance(float q) { setResonance(q); }
+
+    /** @brief Called by the audio engine each processing block. */
+    virtual void update() override;
 
 private:
-    // Internal state variables (Q15 fixed‑point)
-    int32_t low;   // low‑pass accumulator
-    int32_t band;  // band‑pass accumulator
+    /** Queue of incoming audio blocks (single input). */
+    audio_block_t *inputQueueArray[1];
 
-    // Coefficients in Q15 format
-    int16_t f;     // frequency coefficient (0..32767)
-    int16_t q;     // resonance coefficient (0..32767)
+    /** Internal fixed‑point representations of the parameters. */
+    int32_t setting_f;      // Frequency (Q1.31)
+    int32_t setting_q;      // Resonance (Q1.31)
 
-    const float sampleRate_;
-    void recalcCoefficients();
+    /** Filter state variables (low‑pass and band‑pass). */
+    int32_t state_lowpass;
+    int32_t state_bandpass;
 };
 
 #endif // FILTER_VARIABLE_H
