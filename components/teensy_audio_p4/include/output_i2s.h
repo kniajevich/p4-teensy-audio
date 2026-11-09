@@ -1,20 +1,19 @@
-#ifndef OUTPUT_I2S_H
-#define OUTPUT_I2S_H
+#pragma once
 
 #include "AudioStream.h"
 #include "driver/i2s_std.h"
 
 class AudioOutputI2S : public AudioStream {
 public:
-    AudioOutputI2S();
+    AudioOutputI2S() : AudioStream(2, inputQueueArray), tx_chan(nullptr) {}
     virtual ~AudioOutputI2S();
-    bool begin(i2s_port_t port_num, int bclk_io, int ws_io, int dout_io);
-    virtual void update() override;
+    
+    // Default pins for ESP32-P4 DevKit I2S output
+    bool begin(i2s_port_t port_num = I2S_NUM_0, int bclk_io = 12, int ws_io = 13, int dout_io = 11);
+    void stop();
+    virtual void update(void) override;
 
 private:
     audio_block_t *inputQueueArray[2];
-    i2s_chan_handle_t tx_handle;
-    bool is_initialized;
+    i2s_chan_handle_t tx_chan;
 };
-
-#endif // OUTPUT_I2S_H
