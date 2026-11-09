@@ -1,53 +1,64 @@
-#include <cstdio>
+#include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "esp_log.h"
 
-#include "audio_output_i2s.h"
-#include "audio_synth_waveform_sine.h"
+#include "AudioStream.h"
+#include "synth_sine.h"
+#include "output_i2s.h"
 #include "filter_variable.h"
 #include "mixer.h"
 
-/* Constants */
-constexpr float SAMPLE_RATE = 44100.0f;
-constexpr uint32_t BUFFER_SIZE = 256;
+static const char *TAG = "APP_MAIN";
 
-/* Global objects */
-static AudioSynthWaveformSine   synth;
-static AudioFilterStateVariable filter;
-static AudioMixer4             mixer;
-static AudioOutputI2S          i2sOut;
+AudioSynthWaveformSine    sineGen;
+AudioFilterStateVariable  filter;
+AudioMixer4               mixer;
+AudioOutputI2S            i2sOut;
 
-/* Simple audio task */
-extern "C" void app_main(void)
-{
-    // Configure the sine wave generator
-    synth.begin(440.0f);               // A4 = 440 Hz
+// Sine -> Filter -> Mixer (Ch0) -> I2S Stereo
+AudioConnection patchCord1(sineGen, 0, filter, 0);
+AudioConnection patchCord2(filter, 0, mixer, 0);
+// Lowpass output
+AudioConnection patchCord3(mixer, 0, i2sOut, 0);
+AudioConnection patchCord4(mixer, 0, i2sOut, 1);
 
-    // Configure the state‑variable filter (Low‑pass, 1200 Hz, Q = 2.0)
-    filter.setFrequency(1200.0f);
-    filter.setResonance(2.0f);         // Q factor = 2.0
+void audio_engine_task(void *pvParameters) {
+    ESP_LOGI(TAG, "Audio task pinned to core %d", xPortGetCoreID());
 
-    // Mixer: use only channel 0, mute others
-    mixer.gain(0, 32767.0f);           // full level
-    mixer.gain(1, 0.0f);
-    mixer.gain(2, 0.0f);
-    mixer.gain(3, 0.0f);
+    sineGen.frequency(440.0f);
+    sineGen.amplitude(0.5f);
 
-    // Initialise I2S output (stereo, 16‑bit)
-    i2sOut.begin(SAMPLE_RATE, 2);
+    filter.frequency(1200.0f);
+    filter.resonance(2.0f);
 
-    int16_t buffer[BUFFER_SIZE];
+    mixer.gain(0, 1.0f);
 
-    while (true) {
-        // Fill buffer with processed samples
-        for (uint32_t i = 0; i < BUFFER_SIZE; ++i) {
-            int16_t raw   = synth.update();                     // sine wave
-            int16_t filt  = filter.update(raw, 0);              // low‑pass output
-            int16_t mixed = mixer.mix(filt, 0, 0, 0);           // only channel 0 active
-            buffer[i] = mixed;
-        }
-
-        // Send to I2S (stereo – duplicate sample for left/right)
-        i2sOut.write(buffer, BUFFER_SIZE);
+    while (1) {
+        AudioStream::update_all();
+        vTaskDelay(pdMS_TO_TICKS(3));
     }
+}
+
+extern "C" void app_main(void) {
+    ESP_LOGI(TAG, "Initializing Teensy Audio Engine on ESP32-P4...");
+
+    AudioStream::initialize_memory(64);
+
+    if (!i2sOut.begin(I2S_NUM_0, 10, 11, 12)) {
+        ESP_LOGE(TAG, "Failed initializing I2S driver!");
+        return;
+    }
+
+    xTaskCreatePinnedToCore(
+        audio_engine_task,
+        "AudioEngine",
+        4096,
+        nullptr,
+        configMAX_PRIORITIES - 2,
+        nullptr,
+        1
+    );
+
+    ESP_LOGI(TAG, "Audio engine successfully initialized.");
 }
