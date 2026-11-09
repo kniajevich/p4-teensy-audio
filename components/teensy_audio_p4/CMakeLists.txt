@@ -1,0 +1,13 @@
+idf_component_register(
+    SRCS 
+        "src/AudioStream.cpp"
+        "src/synth_sine.cpp"
+        "src/output_i2s.cpp"
+    INCLUDE_DIRS 
+        "include"
+    REQUIRES 
+        esp_driver_i2s 
+        esp_timer 
+        freertos 
+        esp_system
+)
