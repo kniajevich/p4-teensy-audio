@@ -2,6 +2,7 @@ idf_component_register(
     SRCS
         "src/AudioStream.cpp"
         "src/output_i2s.cpp"
+        "src/input_i2s.cpp"
         "src/synth_sine.cpp"
         "src/synth_whitenoise.cpp"
         "src/synth_waveform.cpp"
@@ -10,15 +11,18 @@ idf_component_register(
         "src/filter_variable.cpp"
         "src/filter_biquad.cpp"
         "src/mixer.cpp"
+        "src/mixer4.cpp"
         "src/mixer8.cpp"
+        "src/control_amp.cpp"
+        "src/control_pan.cpp"
         "src/effect_envelope.cpp"
         "src/effect_delay.cpp"
         "src/effect_bitcrusher.cpp"
         "src/effect_multiply.cpp"
-        "src/control_amp.cpp"
         "src/effect_waveshaper.cpp"
         "src/analyze_peak.cpp"
         "src/analyze_rms.cpp"
+        "src/analyze_fft1024.cpp"
     INCLUDE_DIRS
         "include"
     REQUIRES

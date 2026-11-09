@@ -1,10 +1,11 @@
 #pragma once
 
-// Core
+// Core Engine
 #include "AudioStream.h"
 #include "output_i2s.h"
+#include "input_i2s.h"
 
-// Synths
+// Generators
 #include "synth_sine.h"
 #include "synth_whitenoise.h"
 #include "synth_pinknoise.h"
@@ -15,10 +16,12 @@
 #include "filter_variable.h"
 #include "filter_biquad.h"
 
-// Mixers & Routing
+// Routing & Level
 #include "mixer.h"
+#include "mixer4.h"
 #include "mixer8.h"
 #include "control_amp.h"
+#include "control_pan.h"
 #include "effect_passthrough.h"
 
 // Effects
@@ -31,3 +34,4 @@
 // Analysis
 #include "analyze_peak.h"
 #include "analyze_rms.h"
+#include "analyze_fft1024.h"
