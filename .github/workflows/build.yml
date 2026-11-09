@@ -2,44 +2,22 @@ name: Build ESP32-P4 Project
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        shell: bash
-
+    container:
+      image: espressif/idf:release-v5.3
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
-      - name: Install ESP-IDF v5.3
-        uses: esp-idf/setup-esp-idf@v1
-        with:
-          version: v5.3
-
-      - name: Set Target to ESP32-P4
+      - name: Build for ESP32-P4
+        shell: bash
         run: |
-          . $IDF_PATH/export.sh
+          . /opt/esp/entrypoint.sh
           idf.py set-target esp32p4
-
-      - name: Build Project for ESP32-P4
-        run: |
-          . $IDF_PATH/export.sh
           idf.py build
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: firmware
-          path: |
-            build/*.bin
-            build/*.elf
-          if-no-files-found: error
