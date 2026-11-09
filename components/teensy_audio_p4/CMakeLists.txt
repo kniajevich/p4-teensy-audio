@@ -10,12 +10,15 @@ idf_component_register(
         "src/filter_variable.cpp"
         "src/filter_biquad.cpp"
         "src/mixer.cpp"
+        "src/mixer8.cpp"
         "src/effect_envelope.cpp"
         "src/effect_delay.cpp"
         "src/effect_bitcrusher.cpp"
         "src/effect_multiply.cpp"
         "src/control_amp.cpp"
         "src/effect_waveshaper.cpp"
+        "src/analyze_peak.cpp"
+        "src/analyze_rms.cpp"
     INCLUDE_DIRS
         "include"
     REQUIRES
