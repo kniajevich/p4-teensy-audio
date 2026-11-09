@@ -139,3 +139,31 @@ This ported software and ESP32-P4 modifications are licensed under the terms of 
 See the [LICENSE](LICENSE) file for complete details.
 
 Upstream Teensy Audio Library codebase is Copyright (c) PJRC.COM, LLC and licensed under the MIT License.
+
+---
+
+## Support & Sponsorship
+
+If you find this port useful for your audio projects, Eurorack modules, or commercial hardware, consider supporting ongoing DSP optimization and RISC-V hardware verification:
+
+| Network / Asset | Address |
+| :--- | :--- |
+| **EVM** *(ETH, Arbitrum, Base, BSC, Polygon)* | `0xfd8029b4295d6f4d8AB77Bfc061BBaff4f143C44` |
+| **USDT / Tron** *(TRC-20)* | `TQMmeTMudPqafdNqsRnwRGeupBNinLbLdt` |
+| **Bitcoin** *(Native SegWit)* | `bc1q9rwm4p5vplqt5a0mdat3vmegm2kgk38zfzlfd7` |
+| **Solana** *(SOL, SPL)* | `GKbakfAXmaEXZ4DPTgDJCiZTCtXe9a1qgT5q1Y1hXm35` |
+| **Stellar** *(XLM)* | `GACXOMM26U4GL2JT3TEGS2MV5IF7O43Y7X2RGYRUZT2RWQODIOERRITD` |
+
+---
+
+## Support & Sponsorship
+
+If you find this port useful for your audio projects, Eurorack modules, or commercial hardware, consider supporting ongoing DSP optimization and RISC-V hardware verification:
+
+| Network / Asset | Address |
+| :--- | :--- |
+| **EVM** *(ETH, Arbitrum, Base, BSC, Polygon)* | `0xfd8029b4295d6f4d8AB77Bfc061BBaff4f143C44` |
+| **USDT / Tron** *(TRC-20)* | `TQMmeTMudPqafdNqsRnwRGeupBNinLbLdt` |
+| **Bitcoin** *(Native SegWit)* | `bc1q9rwm4p5vplqt5a0mdat3vmegm2kgk38zfzlfd7` |
+| **Solana** *(SOL, SPL)* | `GKbakfAXmaEXZ4DPTgDJCiZTCtXe9a1qgT5q1Y1hXm35` |
+| **Stellar** *(XLM)* | `GACXOMM26U4GL2JT3TEGS2MV5IF7O43Y7X2RGYRUZT2RWQODIOERRITD` |
