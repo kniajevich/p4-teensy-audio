@@ -33,13 +33,13 @@ The library retains the asynchronous block-processing paradigm of PJRC's Teensy 
 
 | Category | Classes |
 | :--- | :--- |
-| **Core Engine** | `AudioStream`, `AudioConnection`, `AudioMemory` |
+| **Core Engine** | `AudioStream`, `AudioConnection`, `AudioMemory`, `AudioPlayQueue`, `AudioRecordQueue` |
 | **I/O Drivers** | `AudioOutputI2S`, `AudioInputI2S` |
-| **Synthesis** | `AudioSynthWaveformSine`, `AudioSynthNoiseWhite`, `AudioSynthNoisePink`, `AudioSynthWaveform`, `AudioSynthWaveformModulated` |
-| **Filters** | `AudioFilterStateVariable`, `AudioFilterBiquad` (up to 4 cascaded stages) |
+| **Synthesis** | `AudioSynthWaveformSine`, `AudioSynthNoiseWhite`, `AudioSynthNoisePink`, `AudioSynthWaveform`, `AudioSynthWaveformModulated`, `AudioSynthKarplusStrong`, `AudioSynthToneSweep` |
+| **Filters** | `AudioFilterStateVariable`, `AudioFilterBiquad` (up to 4 cascaded stages), `AudioFilterFIR` |
 | **Routing & Mixing** | `AudioMixer4`, `AudioMixer8`, `AudioAmplifier`, `AudioEffectPan`, `AudioEffectPassthrough` |
-| **Dynamics & Effects** | `AudioEffectEnvelope` (ADSR), `AudioEffectDelay`, `AudioEffectBitcrusher`, `AudioEffectMultiply` (Ring Mod), `AudioEffectWaveshaper` |
-| **Analysis** | `AudioAnalyzePeak`, `AudioAnalyzeRMS`, `AudioAnalyzeFFT1024` |
+| **Dynamics & Effects** | `AudioEffectEnvelope` (ADSR), `AudioEffectDelay`, `AudioEffectBitcrusher`, `AudioEffectMultiply` (Ring Mod), `AudioEffectWaveshaper`, `AudioEffectChorus`, `AudioEffectFlange`, `AudioEffectFreeverb` |
+| **Analysis** | `AudioAnalyzePeak`, `AudioAnalyzeRMS`, `AudioAnalyzeFFT1024`, `AudioAnalyzeToneDetect` |
 
 ---
 
