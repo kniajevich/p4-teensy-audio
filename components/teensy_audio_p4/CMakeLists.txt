@@ -5,6 +5,7 @@ idf_component_register(
         "src/output_i2s.cpp"
         "src/filter_variable.cpp"
         "src/mixer.cpp"
+        "src/effect_envelope.cpp"
     INCLUDE_DIRS
         "include"
     REQUIRES
