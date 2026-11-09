@@ -9,6 +9,8 @@ idf_component_register(
         "src/filter_variable.cpp"
         "src/mixer.cpp"
         "src/effect_envelope.cpp"
+        "src/effect_delay.cpp"
+        "src/effect_bitcrusher.cpp"
     INCLUDE_DIRS
         "include"
     REQUIRES
