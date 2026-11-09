@@ -2,96 +2,71 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
+#include "Audio.h"
 
-#include "AudioStream.h"
-#include "synth_sine.h"
-#include "effect_envelope.h"
-#include "filter_variable.h"
-#include "mixer.h"
-#include "output_i2s.h"
+static const char *TAG = "P4_TEENSY_AUDIO";
 
-static const char *TAG = "APP_MAIN";
+// DSP Chain Objects
+AudioSynthWaveform          lfo;
+AudioSynthWaveformModulated carrier;
+AudioSynthNoisePink         pink_noise;
+AudioFilterBiquad           filter;
+AudioEffectDelay            delay1;
+AudioMixer8                 mixer;
+AudioOutputI2S              i2s_out;
 
-AudioSynthWaveformSine    sineGen;
-AudioEffectEnvelope       envelope;
-AudioFilterStateVariable  filter;
-AudioMixer4               mixer;
-AudioOutputI2S            i2sOut;
-
-// Audio Graph: Sine -> Envelope -> Filter -> Mixer -> I2S Stereo
-AudioConnection patchCord1(sineGen, 0, envelope, 0);
-AudioConnection patchCord2(envelope, 0, filter, 0);
-AudioConnection patchCord3(filter, 0, mixer, 0);
-AudioConnection patchCord4(mixer, 0, i2sOut, 0);
-AudioConnection patchCord5(mixer, 0, i2sOut, 1);
-
-void audio_engine_task(void *pvParameters) {
-    ESP_LOGI(TAG, "Audio task active on Core %d", xPortGetCoreID());
-
-    // Configure Sine Generator
-    sineGen.frequency(220.0f); // A3
-    sineGen.amplitude(0.8f);
-
-    // Configure Envelope (ADSR)
-    envelope.delay(0.0f);
-    envelope.attack(15.0f);   // 15ms attack
-    envelope.hold(0.0f);      // No hold
-    envelope.decay(100.0f);   // 100ms decay
-    envelope.sustain(0.4f);   // 40% sustain level
-    envelope.release(250.0f); // 250ms release
-
-    // Configure Filter
-    filter.frequency(1800.0f);
-    filter.resonance(2.2f);
-
-    // Configure Mixer
-    mixer.gain(0, 1.0f);
-
-    uint32_t tick = 0;
-    const uint32_t NOTE_ON_INTERVAL = 333;  // ~1 second at 3ms tick
-    const uint32_t NOTE_OFF_OFFSET = 166;   // ~0.5 second note duration
-
-    while (1) {
-        AudioStream::update_all();
-
-        // Trigger note every 1 second
-        if (tick % NOTE_ON_INTERVAL == 0) {
-            envelope.noteOn();
-            ESP_LOGD(TAG, "Note ON. Envelope Level: %.3f", envelope.getCurrentLevel());
-        } else if (tick % NOTE_ON_INTERVAL == NOTE_OFF_OFFSET) {
-            envelope.noteOff();
-            ESP_LOGD(TAG, "Note OFF. Envelope Level: %.3f", envelope.getCurrentLevel());
-        }
-
-        tick++;
-        vTaskDelay(pdMS_TO_TICKS(3));
-    }
-}
+// Audio Connections (patch cord logic)
+AudioConnection patchCord1(lfo, 0, carrier, 0);          // LFO -> FM input
+AudioConnection patchCord2(carrier, 0, filter, 0);       // Carrier -> Biquad
+AudioConnection patchCord3(filter, 0, mixer, 0);         // Filtered synth -> Mix CH0
+AudioConnection patchCord4(filter, 0, delay1, 0);        // Filtered synth -> Delay
+AudioConnection patchCord5(delay1, 0, mixer, 1);         // Delay tap -> Mix CH1
+AudioConnection patchCord6(pink_noise, 0, mixer, 2);     // Pink noise -> Mix CH2
+AudioConnection patchCord7(mixer, 0, i2s_out, 0);        // Main mix L
+AudioConnection patchCord8(mixer, 0, i2s_out, 1);        // Main mix R
 
 extern "C" void app_main(void) {
-    ESP_LOGI(TAG, "Starting Teensy Audio Synthesizer on ESP32-P4...");
+    ESP_LOGI(TAG, "Initializing Teensy Audio Engine on ESP32-P4...");
 
-    // Initialize audio stream memory pool
-    AudioStream::initialize_memory(64);
+    AudioMemory(32);
 
-    // Initialize I2S Output
-    // Pin configuration for ESP32-P4 (example, adjust to your hardware)
-    // BCLK=10, WS=11, DOUT=12
-    if (!i2sOut.begin(I2S_NUM_0, 10, 11, 12)) {
-        ESP_LOGE(TAG, "I2S init failed");
-        return;
+    // 1. Setup LFO (modulator)
+    lfo.begin(WAVEFORM_TRIANGLE);
+    lfo.frequency(4.0f);
+    lfo.amplitude(0.35f);
+
+    // 2. Setup FM Carrier
+    carrier.begin(WAVEFORM_SAWTOOTH);
+    carrier.frequency(220.0f); // A3 note
+    carrier.amplitude(0.5f);
+    carrier.frequencyModulation(1.5f);
+
+    // 3. Setup Pink Noise layer
+    pink_noise.amplitude(0.04f);
+
+    // 4. Setup 2-stage Lowpass Filter (Biquad)
+    filter.setLowpass(0, 1200.0f, 2.5f);
+    filter.setLowpass(1, 1400.0f, 1.5f);
+
+    // 5. Setup Ping-pong style single Delay
+    delay1.delay(0, 280.0f); // 280ms delay
+
+    // 6. Balance Mixer Channels
+    mixer.gain(0, 0.7f); // Dry synth
+    mixer.gain(1, 0.4f); // Delay return
+    mixer.gain(2, 0.15f); // Subtle noise texture
+
+    // 7. Start I2S Engine
+    i2s_out.begin();
+
+    ESP_LOGI(TAG, "Engine running. Cycling base notes...");
+
+    float melody[] = { 220.0f, 246.94f, 261.63f, 293.66f, 329.63f, 392.00f };
+    int note_idx = 0;
+
+    while (1) {
+        carrier.frequency(melody[note_idx]);
+        note_idx = (note_idx + 1) % 6;
+        vTaskDelay(pdMS_TO_TICKS(500));
     }
-
-    // Create audio engine task on Core 1 (high priority)
-    xTaskCreatePinnedToCore(
-        audio_engine_task,
-        "AudioEngine",
-        4096,
-        nullptr,
-        configMAX_PRIORITIES - 2,
-        nullptr,
-        1
-    );
-
-    ESP_LOGI(TAG, "Synthesizer initialized.");
 }
