@@ -7,6 +7,7 @@ idf_component_register(
         "src/synth_waveform.cpp"
         "src/synth_pinknoise.cpp"
         "src/filter_variable.cpp"
+        "src/filter_biquad.cpp"
         "src/mixer.cpp"
         "src/effect_envelope.cpp"
         "src/effect_delay.cpp"
