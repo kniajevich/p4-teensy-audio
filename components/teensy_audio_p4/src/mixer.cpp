@@ -1,48 +1,49 @@
 #include "mixer.h"
-#include <algorithm>
-#include <cmath>
+#include "arm_math_mock.h"
+#include <string.h>
 
-/* Helper macro to convert floating‑point gain to Q15 integer. */
-#define GAIN_FLOAT_TO_Q15(x) static_cast<int16_t>(std::clamp((x), 0.0f, 32767.0f))
-
-AudioMixer4::AudioMixer4()
-{
-    // Initialise all gains to maximum (no attenuation)
-    for (int i = 0; i < 4; ++i) {
-        gains_[i] = 32767;
+AudioMixer4::AudioMixer4() : AudioStream(4, inputQueueArray) {
+    for (int i = 0; i < 4; i++) {
+        inputQueueArray[i] = nullptr;
+        multiplier[i] = 65536; // 1.0 in 16.16 fixed point
     }
 }
 
-void AudioMixer4::gain(uint8_t channel, float level)
-{
-    if (channel > 3) return; // ignore invalid channel
-    gains_[channel] = GAIN_FLOAT_TO_Q15(level);
+void AudioMixer4::gain(unsigned int channel, float gain) {
+    if (channel >= 4) return;
+    if (gain < 0.0f) gain = 0.0f;
+    if (gain > 32767.0f) gain = 32767.0f;
+    multiplier[channel] = (int32_t)(gain * 65536.0f);
 }
 
-/**
- * Mix four samples.
- *
- * The algorithm multiplies each sample by its channel gain using the
- * __SMLALD intrinsic (multiply‑accumulate without overflow) and then
- * right‑shifts the product by 15 to convert back from Q15.
- * The summed result is saturated to the int16_t range with __SSAT.
- */
-int16_t AudioMixer4::mix(int16_t in0, int16_t in1, int16_t in2, int16_t in3)
-{
-    int32_t acc = 0;
-
-    // Channel 0
-    acc = __SMLALD(in0, gains_[0], acc);
-    // Channel 1
-    acc = __SMLALD(in1, gains_[1], acc);
-    // Channel 2
-    acc = __SMLALD(in2, gains_[2], acc);
-    // Channel 3
-    acc = __SMLALD(in3, gains_[3], acc);
-
-    // Convert from Q30 (product of two Q15 values) to Q15 by shifting 15 bits.
-    acc >>= 15;
-
-    // Saturate to int16_t range.
-    return static_cast<int16_t>(__SSAT(acc, 16));
+void AudioMixer4::update() {
+    audio_block_t *in[4];
+    for (int i = 0; i < 4; i++) {
+        in[i] = receiveReadOnly(i);
+    }
+    
+    audio_block_t *out = allocate();
+    if (!out) {
+        for (int i = 0; i < 4; i++) {
+            if (in[i]) release(in[i]);
+        }
+        return;
+    }
+    
+    for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
+        int64_t sum = 0;
+        for (int ch = 0; ch < 4; ch++) {
+            if (in[ch]) {
+                sum += ((int64_t)in[ch]->data[i] * multiplier[ch]) >> 16;
+            }
+        }
+        out->data[i] = (int16_t)__SSAT((int32_t)sum, 16);
+    }
+    
+    for (int ch = 0; ch < 4; ch++) {
+        if (in[ch]) release(in[ch]);
+    }
+    
+    transmit(out, 0);
+    release(out);
 }
