@@ -35,11 +35,11 @@ The library retains the asynchronous block-processing paradigm of PJRC's Teensy 
 | :--- | :--- |
 | **Core Engine** | `AudioStream`, `AudioConnection`, `AudioMemory`, `AudioPlayQueue`, `AudioRecordQueue` |
 | **I/O Drivers** | `AudioOutputI2S`, `AudioInputI2S` |
-| **Synthesis** | `AudioSynthWaveformSine`, `AudioSynthNoiseWhite`, `AudioSynthNoisePink`, `AudioSynthWaveform`, `AudioSynthWaveformModulated`, `AudioSynthKarplusStrong`, `AudioSynthToneSweep` |
+| **Synthesis** | `AudioSynthWaveformSine`, `AudioSynthNoiseWhite`, `AudioSynthNoisePink`, `AudioSynthWaveform`, `AudioSynthWaveformModulated`, `AudioSynthKarplusStrong`, `AudioSynthToneSweep`, `AudioSynthSimpleDrum` |
 | **Filters** | `AudioFilterStateVariable`, `AudioFilterBiquad` (up to 4 cascaded stages), `AudioFilterFIR` |
-| **Routing & Mixing** | `AudioMixer4`, `AudioMixer8`, `AudioAmplifier`, `AudioEffectPan`, `AudioEffectPassthrough` |
-| **Dynamics & Effects** | `AudioEffectEnvelope` (ADSR), `AudioEffectDelay`, `AudioEffectBitcrusher`, `AudioEffectMultiply` (Ring Mod), `AudioEffectWaveshaper`, `AudioEffectChorus`, `AudioEffectFlange`, `AudioEffectFreeverb` |
-| **Analysis** | `AudioAnalyzePeak`, `AudioAnalyzeRMS`, `AudioAnalyzeFFT1024`, `AudioAnalyzeToneDetect` |
+| **Routing & Level** | `AudioMixer4`, `AudioMixer8`, `AudioAmplifier`, `AudioEffectPan`, `AudioEffectPassthrough`, `AudioEffectMidSide`, `AudioEffectFade` |
+| **Dynamics & Effects** | `AudioEffectEnvelope` (ADSR), `AudioEffectDelay`, `AudioEffectBitcrusher`, `AudioEffectMultiply` (Ring Mod), `AudioEffectWaveshaper`, `AudioEffectChorus` (with Fibonacci Spread), `AudioEffectFlange`, `AudioEffectFreeverb` (with Golden Ratio tuning), `AudioEffectGranular` (Pitch Shift & Freeze) |
+| **Analysis** | `AudioAnalyzePeak`, `AudioAnalyzeRMS`, `AudioAnalyzeFFT1024`, `AudioAnalyzeFFT256`, `AudioAnalyzeToneDetect` |
 
 ---
 
