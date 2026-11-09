@@ -35,6 +35,7 @@ public:
 };
 
 class AudioStream {
+    friend class AudioConnection;
 public:
     AudioStream(uint8_t ninput, audio_block_t **iqueue);
     virtual ~AudioStream();
