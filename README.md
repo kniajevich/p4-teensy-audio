@@ -93,9 +93,20 @@ idf.py -p /dev/ttyUSB0 flash monitor
 
 ---
 
+## Dual Licensing & Commercial Inquiries
+
+This project is distributed under a **Dual-Licensing model**:
+
+1. **Open Source (GPLv3):** Free for non-commercial use, research, education, and open-source projects. In accordance with the GNU General Public License v3.0, any derivative work or firmware incorporating this code must also be fully open-sourced under the GPLv3 license.
+2. **Commercial / Closed-Source License:** If you wish to incorporate this library into commercial hardware devices, proprietary audio gear, or closed-source firmware where GPLv3 copyleft terms cannot be met, you must obtain a separate commercial license.
+
+For commercial licensing terms, custom ports, or consulting, reach out directly via GitHub: [@kniajevich](https://github.com/kniajevich).
+
+---
+
 ## License
 
-This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
-See the [LICENSE](LICENSE) file for complete terms.
+This software is licensed under the terms of the **GNU General Public License v3.0 (GPL-3.0)**.
+See the [LICENSE](LICENSE) file for complete details.
 
 Upstream Teensy Audio Library codebase is Copyright (c) PJRC.COM, LLC and licensed under the MIT License.
