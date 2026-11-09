@@ -1,0 +1,22 @@
+name: Build ESP32-P4
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: espressif/idf:release-v5.3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set target to ESP32-P4
+        run: idf.py set-target esp32p4
+
+      - name: Build project
+        run: idf.py build
