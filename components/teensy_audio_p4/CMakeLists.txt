@@ -1,8 +1,9 @@
 idf_component_register(
     SRCS
         "src/AudioStream.cpp"
-        "src/synth_sine.cpp"
         "src/output_i2s.cpp"
+        "src/synth_sine.cpp"
+        "src/synth_whitenoise.cpp"
         "src/filter_variable.cpp"
         "src/mixer.cpp"
         "src/effect_envelope.cpp"
@@ -12,5 +13,4 @@ idf_component_register(
         esp_driver_i2s
         esp_timer
         freertos
-        esp_system
 )
