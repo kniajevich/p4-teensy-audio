@@ -13,7 +13,6 @@
 #include "synth_pinknoise.h"
 #include "synth_waveform.h"
 #include "synth_waveform_mod.h"
-
 #include "synth_karplusstrong.h"
 #include "synth_tonesweep.h"
 #include "synth_simple_drum.h"
@@ -31,7 +30,6 @@
 #include "control_pan.h"
 #include "effect_passthrough.h"
 #include "effect_midside.h"
-#include "effect_fade.h"
 
 // Dynamics & Effects
 #include "effect_envelope.h"
@@ -43,10 +41,12 @@
 #include "effect_flange.h"
 #include "effect_freeverb.h"
 #include "effect_granular.h"
+#include "effect_fade.h"
 
-// Analysis
+// Analysis & Pitch Tracking
 #include "analyze_peak.h"
 #include "analyze_rms.h"
 #include "analyze_fft1024.h"
 #include "analyze_fft256.h"
 #include "analyze_tonedetect.h"
+#include "analyze_notefreq.h"

@@ -14,8 +14,6 @@ This project is an independent port and architectural adaptation of the renowned
 * **Original Architecture & DSP Concepts:** Copyright (c) Paul Stoffregen / PJRC.COM, LLC (distributed under the permissive MIT license).
 * **ESP32-P4 Port, FreeRTOS Integration & Modernization:** Alex Ovchinnikov ([@kniajevich](https://github.com/kniajevich)).
 
-Special gratitude to Paul Stoffregen and the PJRC community for establishing the gold standard of microcontroller audio graph processing.
-
 ---
 
 ## Architecture Overview
@@ -39,7 +37,44 @@ The library retains the asynchronous block-processing paradigm of PJRC's Teensy 
 | **Filters** | `AudioFilterStateVariable`, `AudioFilterBiquad` (up to 4 cascaded stages), `AudioFilterFIR` |
 | **Routing & Level** | `AudioMixer4`, `AudioMixer8`, `AudioAmplifier`, `AudioEffectPan`, `AudioEffectPassthrough`, `AudioEffectMidSide`, `AudioEffectFade` |
 | **Dynamics & Effects** | `AudioEffectEnvelope` (ADSR), `AudioEffectDelay`, `AudioEffectBitcrusher`, `AudioEffectMultiply` (Ring Mod), `AudioEffectWaveshaper`, `AudioEffectChorus` (with Fibonacci Spread), `AudioEffectFlange`, `AudioEffectFreeverb` (with Golden Ratio tuning), `AudioEffectGranular` (Pitch Shift & Freeze) |
-| **Analysis** | `AudioAnalyzePeak`, `AudioAnalyzeRMS`, `AudioAnalyzeFFT1024`, `AudioAnalyzeFFT256`, `AudioAnalyzeToneDetect` |
+| **Analysis & Pitch Tracking** | `AudioAnalyzePeak`, `AudioAnalyzeRMS`, `AudioAnalyzeFFT1024`, `AudioAnalyzeFFT256`, `AudioAnalyzeToneDetect`, `AudioAnalyzeNoteFreq` (YIN Guitar Tuner) |
+
+---
+
+## Installation & Integration Guide
+
+### Method 1: Using as an ESP-IDF Component (Recommended)
+
+Clone this repository directly into your project's `components/` directory:
+```bash
+cd my_esp32p4_project/components
+git clone [https://github.com/kniajevich/p4-teensy-audio.git](https://github.com/kniajevich/p4-teensy-audio.git) teensy_audio_p4
+```
+
+Ensure your `CMakeLists.txt` in `main/` declares dependency on the component:
+```cmake
+idf_component_register(
+    SRCS "main.cpp"
+    INCLUDE_DIRS "."
+    REQUIRES teensy_audio_p4
+)
+```
+
+### Method 2: Building Standalone Firmware
+
+```bash
+git clone [https://github.com/kniajevich/p4-teensy-audio.git](https://github.com/kniajevich/p4-teensy-audio.git)
+cd p4-teensy-audio
+
+# Configure target for ESP32-P4
+idf.py set-target esp32p4
+
+# Build the project
+idf.py build
+
+# Flash to hardware and monitor serial output
+idf.py -p /dev/ttyUSB0 flash monitor
+```
 
 ---
 
@@ -58,41 +93,31 @@ Custom pin mappings can be passed directly to `AudioOutputI2S::begin(...)` and `
 
 ---
 
-## Quick Start
+## Quick Start (Guitar Tuner Example)
 
 ```cpp
 #include "Audio.h"
 
-AudioSynthWaveformSine sine1;
-AudioOutputI2S         i2s_out;
-AudioConnection        patchCord1(sine1, 0, i2s_out, 0);
-AudioConnection        patchCord2(sine1, 0, i2s_out, 1);
+AudioInputI2S        i2s_in;
+AudioAnalyzeNoteFreq tuner;
+AudioConnection      cord(i2s_in, 0, tuner, 0);
 
 extern "C" void app_main(void) {
     AudioMemory(16);
-
-    sine1.frequency(440.0f);
-    sine1.amplitude(0.5f);
-
-    i2s_out.begin();
+    tuner.begin(0.15f); // 0.15 threshold for clean string detection
+    i2s_in.begin();
 
     while (1) {
-        vTaskDelay(pdMS_TO_TICKS(1000));
+        if (tuner.available()) {
+            float freq = tuner.read();
+            float prob = tuner.probability();
+            if (prob > 0.85f) {
+                printf("Pitch: %.2f Hz (Confidence: %.0f%%)\n", freq, prob * 100.0f);
+            }
+        }
+        vTaskDelay(pdMS_TO_TICKS(50));
     }
 }
-```
-
----
-
-## Build & Verification
-
-The repository includes a continuous integration workflow (`.github/workflows/build.yml`) that verifies every commit against `espressif/idf:release-v5.3` container.
-
-To build locally:
-```bash
-idf.py set-target esp32p4
-idf.py build
-idf.py -p /dev/ttyUSB0 flash monitor
 ```
 
 ---

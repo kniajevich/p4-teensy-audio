@@ -37,6 +37,7 @@ idf_component_register(
         "src/analyze_fft1024.cpp"
         "src/analyze_fft256.cpp"
         "src/analyze_tonedetect.cpp"
+        "src/analyze_notefreq.cpp"
     INCLUDE_DIRS
         "include"
     REQUIRES
