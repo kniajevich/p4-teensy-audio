@@ -7,10 +7,14 @@ High-performance audio processing engine ported from the Teensy Audio Library (`
 
 ---
 
-## Author & Maintainer
+## Acknowledgments & Upstream Attribution
 
-* **Port Architect & Lead Developer:** Alex Ovchinnikov ([@kniajevich](https://github.com/kniajevich))
-* **Original Teensy Audio Library:** Paul Stoffregen ([PJRC.COM, LLC](https://www.pjrc.com/teensy/td_libs_Audio.html))
+This project is an independent port and architectural adaptation of the renowned **Teensy Audio Library**, originally created by **Paul Stoffregen ([PJRC.COM, LLC](https://www.pjrc.com/teensy/td_libs_Audio.html))**.
+
+* **Original Architecture & DSP Concepts:** Copyright (c) Paul Stoffregen / PJRC.COM, LLC (distributed under the permissive MIT license).
+* **ESP32-P4 Port, FreeRTOS Integration & Modernization:** Alex Ovchinnikov ([@kniajevich](https://github.com/kniajevich)).
+
+Special gratitude to Paul Stoffregen and the PJRC community for establishing the gold standard of microcontroller audio graph processing.
 
 ---
 
@@ -106,7 +110,7 @@ For commercial licensing terms, custom ports, or consulting, reach out directly 
 
 ## License
 
-This software is licensed under the terms of the **GNU General Public License v3.0 (GPL-3.0)**.
+This ported software and ESP32-P4 modifications are licensed under the terms of the **GNU General Public License v3.0 (GPL-3.0)**.
 See the [LICENSE](LICENSE) file for complete details.
 
 Upstream Teensy Audio Library codebase is Copyright (c) PJRC.COM, LLC and licensed under the MIT License.
