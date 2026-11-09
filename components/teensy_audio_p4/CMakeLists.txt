@@ -4,6 +4,8 @@ idf_component_register(
         "src/output_i2s.cpp"
         "src/synth_sine.cpp"
         "src/synth_whitenoise.cpp"
+        "src/synth_waveform.cpp"
+        "src/synth_pinknoise.cpp"
         "src/filter_variable.cpp"
         "src/mixer.cpp"
         "src/effect_envelope.cpp"
