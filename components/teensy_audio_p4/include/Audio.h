@@ -18,7 +18,6 @@
 
 // Routing & Level
 #include "mixer.h"
-#include "mixer4.h"
 #include "mixer8.h"
 #include "control_amp.h"
 #include "control_pan.h"

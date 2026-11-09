@@ -11,7 +11,6 @@ idf_component_register(
         "src/filter_variable.cpp"
         "src/filter_biquad.cpp"
         "src/mixer.cpp"
-        "src/mixer4.cpp"
         "src/mixer8.cpp"
         "src/control_amp.cpp"
         "src/control_pan.cpp"
