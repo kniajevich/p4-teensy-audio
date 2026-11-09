@@ -47,7 +47,7 @@ protected:
     audio_block_t *receiveReadOnly(unsigned int index = 0);
     audio_block_t *receiveWritable(unsigned int index = 0);
     void transmit(audio_block_t *block, unsigned int index = 0);
-    void release(audio_block_t *block);
+    static void release(audio_block_t *block);
     static audio_block_t *allocate(void);
 
     uint8_t num_inputs;
@@ -58,7 +58,7 @@ protected:
 
 private:
     static audio_block_t *memory_pool;
-    static uint16_t memory_pool_available_mask[];
+    static uint16_t memory_pool_available_mask[16];
     static uint16_t max_blocks;
     static SemaphoreHandle_t mem_mutex;
 };
