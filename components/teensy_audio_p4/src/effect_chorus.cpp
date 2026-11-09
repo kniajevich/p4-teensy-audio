@@ -12,6 +12,24 @@ bool AudioEffectChorus::begin(int16_t *delayline, int length, int voices) {
     return true;
 }
 
+void AudioEffectChorus::goldenSpread(bool enable) {
+    use_golden_spread = enable;
+    if (enable) {
+        // Golden angle 137.5077 deg offset (~1640531527u in 2^32 phase space)
+        // Fibonacci rate distribution to completely prevent cyclic phase alignment
+        const uint32_t fibonacci_rates[4] = {21000000u, 34000000u, 55000000u, 89000000u};
+        for (int i = 0; i < 4; i++) {
+            lfo_phase[i] = (uint32_t)(i * 1640531527u);
+            lfo_rate[i] = fibonacci_rates[i];
+        }
+    } else {
+        for (int i = 0; i < 4; i++) {
+            lfo_phase[i] = (uint32_t)(i * 1073741824u);
+            lfo_rate[i] = (uint32_t)(25000000u * (i + 1));
+        }
+    }
+}
+
 void AudioEffectChorus::update(void) {
     audio_block_t *block = receiveReadOnly(0);
     if (!block) return;
@@ -34,7 +52,7 @@ void AudioEffectChorus::update(void) {
         int32_t sum = block->data[i];
 
         for (int v = 0; v < num_voices; v++) {
-            lfo_phase[v] += (uint32_t)(25000000u * (v + 1));
+            lfo_phase[v] += lfo_rate[v];
             float mod = sinf((float)lfo_phase[v] * (2.0f * (float)M_PI / 4294967296.0f));
             int offset = base_delay + (int)(mod * mod_depth);
             int read_idx = write_idx - offset;

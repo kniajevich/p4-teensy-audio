@@ -8,11 +8,13 @@ public:
     AudioEffectFreeverb();
     void roomsize(float r);
     void damping(float d);
+    void goldenTuning(bool enable = true);
     virtual void update(void) override;
 private:
     audio_block_t *inputQueueArray[1];
     int16_t roomsize_val;
     int16_t damp_val;
+    bool use_golden_tuning;
 
     int16_t comb_buf[8][1700];
     int comb_len[8];

@@ -1,6 +1,6 @@
 #include "effect_freeverb.h"
 
-AudioEffectFreeverb::AudioEffectFreeverb() : AudioStream(1, inputQueueArray), roomsize_val(16384), damp_val(6553) {
+AudioEffectFreeverb::AudioEffectFreeverb() : AudioStream(1, inputQueueArray), roomsize_val(16384), damp_val(6553), use_golden_tuning(false) {
     const int comb_tuning[8] = {1116, 1188, 1277, 1356, 1422, 1491, 1557, 1617};
     const int allpass_tuning[4] = {556, 441, 341, 225};
     memset(comb_buf, 0, sizeof(comb_buf));
@@ -22,6 +22,25 @@ void AudioEffectFreeverb::damping(float d) {
     if (d < 0.0f) d = 0.0f;
     if (d > 1.0f) d = 1.0f;
     damp_val = (int16_t)(d * 16384.0f);
+}
+
+void AudioEffectFreeverb::goldenTuning(bool enable) {
+    use_golden_tuning = enable;
+    const int comb_standard[8] = {1116, 1188, 1277, 1356, 1422, 1491, 1557, 1617};
+    const int allpass_standard[4] = {556, 441, 341, 225};
+    // Golden ratio (phi) distributed mutually prime delay lines to eliminate comb resonance
+    const int comb_phi[8] = {1087, 1153, 1229, 1319, 1399, 1489, 1567, 1663};
+    const int allpass_phi[4] = {577, 439, 347, 223};
+
+    for (int i = 0; i < 8; i++) {
+        comb_len[i] = enable ? comb_phi[i] : comb_standard[i];
+        comb_idx[i] = 0;
+        comb_filter[i] = 0;
+    }
+    for (int i = 0; i < 4; i++) {
+        allpass_len[i] = enable ? allpass_phi[i] : allpass_standard[i];
+        allpass_idx[i] = 0;
+    }
 }
 
 void AudioEffectFreeverb::update(void) {
