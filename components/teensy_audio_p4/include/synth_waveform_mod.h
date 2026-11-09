@@ -7,7 +7,7 @@ class AudioSynthWaveformModulated : public AudioStream {
 public:
     AudioSynthWaveformModulated() : AudioStream(2, inputQueueArray), phase_accumulator(0), phase_increment(0), magnitude(0), tone_type(WAVEFORM_SINE), modulation_factor(32768) {}
 
-    void begin(short t) { tone_type = t; }
+    void begin(int16_t t) { tone_type = (waveform_type_t)t; }
     void frequency(float freq) {
         if (freq < 0.0f) freq = 0.0f;
         else if (freq > AUDIO_SAMPLE_RATE_EXACT / 2) freq = AUDIO_SAMPLE_RATE_EXACT / 2;
@@ -29,6 +29,6 @@ private:
     uint32_t phase_accumulator;
     uint32_t phase_increment;
     int16_t magnitude;
-    short tone_type;
+    waveform_type_t tone_type;
     int32_t modulation_factor;
 };

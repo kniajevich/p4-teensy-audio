@@ -2,7 +2,7 @@
 
 #include "AudioStream.h"
 
-enum short {
+enum waveform_type_t : int16_t {
     WAVEFORM_SINE = 0,
     WAVEFORM_SQUARE,
     WAVEFORM_SAWTOOTH,
@@ -14,8 +14,8 @@ class AudioSynthWaveform : public AudioStream {
 public:
     AudioSynthWaveform() : AudioStream(0, nullptr), phase_accumulator(0), phase_increment(0), magnitude(0), tone_type(WAVEFORM_SINE), pulse_width(0x80000000) {}
     
-    void begin(short t) {
-        tone_type = t;
+    void begin(int16_t t) {
+        tone_type = (waveform_type_t)t;
     }
     void frequency(float freq) {
         if (freq < 0.0f) freq = 0.0f;
@@ -38,6 +38,6 @@ private:
     uint32_t phase_accumulator;
     uint32_t phase_increment;
     int16_t magnitude;
-    short tone_type;
+    waveform_type_t tone_type;
     uint32_t pulse_width;
 };
